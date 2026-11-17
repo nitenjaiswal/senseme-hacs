@@ -34,6 +34,17 @@ aiosenseme.device.asyncio = _fake_asyncio
 aiosenseme.discovery.asyncio = _fake_asyncio
 # ---------------------------------------
 
+# --- ON-DEMAND CONNECTIONS (opt-in) ---
+# First-gen Haiku fans keep an 8-slot TCP table and never reap a client that vanishes without
+# a FIN, so the always-open socket fills the table after enough Wi-Fi drops and locks HA out
+# (accept-then-RST, "Connection lost/restored" every second). ondemand.py connects per poll and
+# per command instead, for the IPs listed in its ON_DEMAND_ADDRESSES only. Empty = no change.
+# Measurements: https://github.com/mikelawrence/senseme-hacs/issues/49
+from . import ondemand  # noqa: E402
+
+ondemand.install()
+# --------------------------------------
+
 PLATFORMS = [FAN_DOMAIN, LIGHT_DOMAIN, BINARYSENSOR_DOMAIN, SWITCH_DOMAIN]
 
 _LOGGER = logging.getLogger(__name__)
